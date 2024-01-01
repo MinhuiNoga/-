@@ -1,0 +1,59 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <title>NOTES</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/bootstrap.min.js" ></script>
+</head>
+<body>
+<img src="folder.png" class="img-thumbnail" alt="folder"><br>
+<a href="java/UserController.java"><span class="badge bg-primary">UserController</span></a>
+<div class="container-fluid w-100">
+    <div class="row">
+        <label class="col-sm-12">pom.xml</label>
+        <div class="col-sm-12">
+            <div class="form-floating">
+                <textarea class="form-control" rows="8" style="height: 150px">
+                    ...
+                           <dependency>
+                                <groupId>org.tku</groupId>
+                                <artifactId>tku-api</artifactId>
+                                <version>1.0-SNAPSHOT</version>
+                            </dependency>
+
+                            <dependency>
+                                <groupId>com.fasterxml.jackson.core</groupId>
+                                <artifactId>jackson-annotations</artifactId>
+                                <version>2.15.2</version>
+                            </dependency>
+
+                            <dependency>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-starter-web</artifactId>
+                            </dependency>
+                    ...
+                </textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-sm-12">SecurityConfiguration.java</label>
+        <div class="col-sm-12">
+            <div class="form-floating">
+                <textarea class="form-control" rows="8" style="height: 150px">
+                    ...
+                        http.csrf(httpSecurityCsrfConfigurer-> {
+                            httpSecurityCsrfConfigurer.ignoringRequestMatchers("/api/v1/**");
+                        });
+                    ...
+                </textarea>
+            </div>
+        </div>
+    </div>
+
+</div>
+    <hr>
+    <h2>https://github.com/chihualu/tku-202301.git</h2>
+</body>
+</html>

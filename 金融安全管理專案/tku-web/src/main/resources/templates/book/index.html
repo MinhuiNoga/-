@@ -1,0 +1,159 @@
+<html layout:decorate="~{common/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <!-- 添加任何必要的CSS或JavaScript文件 -->
+    <meta charset="UTF-8">
+    <script
+            src="https://code.jquery.com/jquery-3.6.4.js"
+            integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+            crossorigin="anonymous">
+
+    </script>
+    <!-- Include any necessary CSS or JavaScript files -->
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card card-header container">
+                <form th:action="@{/web/book}" th:object="${book}" class="needs-validation">
+                    <div class="alert alert-danger d-none" role="alert"></div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="bookSeq" th:text="#{function.book.bookSeq}"></label>
+                        <div class="col-sm-10">
+                            <input class="form-control " id="bookSeq" name="bookSeq" th:value="*{bookSeq}" type="text" >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="bookName" th:text="#{function.book.bookName}"></label>
+                        <div class="col-sm-10">
+                            <input class="form-control " id="bookName" name="bookName" th:value="*{bookName}" th:maxlength="50" type="text" >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="author" th:text="#{function.book.author}"></label>
+                        <div class="col-sm-10">
+                            <input class="form-control " id="author" name="author" th:value="*{author}" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="price" th:text="#{function.book.price}"></label>
+                        <div class="col-sm-10">
+                            <input class="form-control " id="price" name="price" th:value="*{price}" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 align-items-center d-flex">
+                            <input class="btn btn-primary btn-lg" type="submit" value="查詢">
+                            <a class="btn btn-primary btn-lg" th:href="@{/web/book/0}" >新增</a>
+                            <!--<a class="btn btn-primary btn-lg" th:href="@{/web/book/price}" >價格估算</a> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card card-body">
+                <table class="table table-striped table-bordered table-hover w-100 display nowrap" id="dataTables">
+                    <thead>
+                    <tr>
+                        <th class="text-center align-middle" th:text="#{function.book.bookSeq}"></th>
+                        <th class="text-center align-middle" th:text="#{function.book.bookName}"></th>
+                        <th class="text-center align-middle" th:text="#{function.book.author}"></th>
+                        <th class="text-center align-middle" th:text="#{function.book.price}"></th>
+                        <th class="text-center align-middle" >&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="book : ${books}" th:if="books">
+                        <td class="text-center align-middle" th:text="${book.bookSeq}"></td>
+                        <td class="text-center align-middle" th:text="${book.bookName}"></td>
+                        <td class="text-center align-middle" th:text="${book.author}"></td>
+                        <td class="text-center align-middle" th:text="${book.price}"></td>
+                        <td class="text-center align-middle">
+                            <a th:href="@{'/web/book/' + ${book.bookSeq}}" class="btn btn-primary">修改</a>
+                        </td>
+                    </tr>
+                    <tr th:if="!books">
+                        <td class="text-center align-middle" colspan="5"> No Data </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+                <script>
+                    function estimatePrice() {
+                        var quantities = [];
+
+                        // 遍歷每一列，獲取數量並添加到列表中
+                        $("input[name='quantity']").each(function () {
+                            quantities.push(parseInt($(this).val()));
+                        });
+
+                        // 發送 AJAX 請求
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/v1/estimatePrice",
+                            contentType: "application/json",
+                            data: JSON.stringify(quantities),
+                            success: function (response) {
+                                alert("總共" + response + "元");
+                            },
+                            error: function () {
+                                alert("發生錯誤，無法獲取價格。");
+                            }
+                        });
+                    }
+                </script>
+
+                <!-- 添加價格估算按鈕 -->
+                <button class="btn btn-primary btn-lg" onclick="console.log('Button clicked!'); estimatePrice();">價格估算</button>
+
+                <div class="card card-body">
+                    <!-- 創建包含書籍信息的表格 -->
+                    <table class="table table-striped table-bordered table-hover w-100 display nowrap" id="PriceTables">
+                        <thead>
+                        <!-- 定義表頭 -->
+                        <tr>
+                            <!-- 書籍序號欄 -->
+                            <th class="text-center align-middle" th:text="#{function.book.bookSeq}"></th>
+                            <!-- 書籍名稱欄 -->
+                            <th class="text-center align-middle" th:text="#{function.book.bookName}"></th>
+                            <!-- 作者欄 -->
+                            <th class="text-center align-middle" th:text="#{function.book.author}"></th>
+                            <!-- 價格欄 -->
+                            <th class="text-center align-middle" th:text="#{function.book.price}"></th>
+                            <!-- 操作欄 -->
+                            <th class="text-center align-middle" th:text="數量"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 使用Thymeleaf的迴圈將書籍信息填充到表格中 -->
+                        <tr th:each="book : ${books}" th:if="books">
+                            <!-- 書籍序號 -->
+                            <td class="text-center align-middle" th:text="${book.bookSeq}"></td>
+                            <!-- 書籍名稱 -->
+                            <td class="text-center align-middle" th:text="${book.bookName}"></td>
+                            <!-- 作者 -->
+                            <td class="text-center align-middle" th:text="${book.author}"></td>
+                            <!-- 價格 -->
+                            <td class="text-center align-middle" th:text="${book.price}"></td>
+                            <!-- 修改按鈕，點擊後跳轉到修改頁面 -->
+                            <td>
+                                <div>
+                                    <!-- 使用 JavaScript 設定數量的預設值 -->
+                                    <input class="form-control" id="quantity" name="quantity" type="number" value="0" />
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- 如果書籍列表為空，顯示" No Data " -->
+                        <tr th:if="!books">
+                            <td class="text-center align-middle" colspan="5"> No Data </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

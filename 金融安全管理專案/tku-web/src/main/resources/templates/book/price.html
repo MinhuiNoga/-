@@ -1,0 +1,122 @@
+<!-- price.html -->
+<!DOCTYPE html>
+<html layout:decorate="~{common/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 添加任何必要的CSS或JavaScript文件 -->
+    <meta charset="UTF-8">
+    <!-- Include any necessary CSS or JavaScript files -->
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="card">
+        <div class="card card-header container">
+            <form id="priceForm" th:action="@{/web/book/price}" method="POST" class="needs-validation">
+
+                <!-- 現有的價格估算表單 -->
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="estimationBookSeq">書籍序號</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="estimationBookSeq" name="estimationBookSeq" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="quantity">數量</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="quantity" name="quantity" type="number">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12 align-items-center d-flex">
+                        <!-- 新增書籍按鈕 -->
+                        <button class="btn btn-secondary btn-lg" onclick="addBook()">新增書籍</button>
+                        <!-- 添加價格估算按鈕 -->
+                        <button class="btn btn-primary btn-lg" onclick="estimatePrice()">價格估算</button>
+                    </div>
+                </div>
+
+                <!-- 新增書籍的列表 -->
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">要購買的書籍</label>
+                    <div class="col-sm-10">
+                        <ul id="bookList" class="list-group">
+                            <!-- 使用Thymeleaf迴圈顯示新增書籍 -->
+                            <li th:each="book : ${bookList}" class="list-group-item">
+                                <span th:text="${book.bookSeq} + ' - 數量: ' + ${book.quantity}"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 維護一個書籍列表
+    var bookList = [];
+
+    function addBook() {
+        var bookSeq = $("#estimationBookSeq").val();
+        var quantity = $("#quantity").val();
+
+        // 將書籍加入列表
+        bookList.push({ bookSeq: bookSeq, quantity: quantity });
+
+        // 清空輸入欄位
+        $("#estimationBookSeq").val("");
+        $("#quantity").val("");
+
+        // 更新書籍列表顯示
+        updateBookList();
+
+        // 使用Ajax向後端發送請求
+        $.ajax({
+            type: "GET",
+            url: "/web/book/checkBook?bookSeq=" + bookSeq,
+            success: function (response) {
+                // 在這裡處理後端返回的結果
+                if (response.exists) {
+                    alert("書籍存在於資料庫中！");
+                } else {
+                    alert("書籍不存在於資料庫中！");
+                }
+            },
+            error: function () {
+                alert("發生錯誤，無法檢查書籍。");
+            }
+        });
+    }
+
+    function updateBookList() {
+        // 清空原有的列表
+        $("#bookList").empty();
+
+        // 更新書籍列表顯示
+        for (var i = 0; i < bookList.length; i++) {
+            $("#bookList").append("<li>" + bookList[i].bookSeq + " - 數量: " + bookList[i].quantity + "</li>");
+        }
+    }
+
+
+
+    function estimatePrice() {
+        // 使用AJAX向後端發送請求處理價格估算
+        $.ajax({
+            type: "POST",
+            url: "/web/book/price",
+            data: {
+                bookList: JSON.stringify(bookList)
+            },
+            success: function (result) {
+                // 處理後端返回的結果，例如，顯示總金額
+                alert("總金額為：" + result);
+            },
+            error: function () {
+                alert("估算價格時出現錯誤。");
+            }
+        });
+    }
+</script>
+</body>
+</html>

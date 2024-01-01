@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- 上面的DOCTYPE聲明定義了HTML文檔的類型 -->
+
+<head>
+    <!-- 這裡放置<head>區塊的內容，包括字符集、標題、外部樣式表和腳本 -->
+
+    <meta charset="utf-8">
+    <!-- 設定文檔的字符集為UTF-8 -->
+
+    <title>Title</title>
+    <!-- 設定文檔的標題為"Title" -->
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <!-- 引用一個名為bootstrap.min.css的外部樣式表，@{/css/bootstrap.min.css}是Thymeleaf的URL處理方式 -->
+
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- 引用一個名為bootstrap.min.js的外部腳本文件，@{/js/bootstrap.min.js}是Thymeleaf的URL處理方式 -->
+
+
+</head>
+
+<body>
+<!-- 開始<body>區塊 -->
+
+<th:block th:include="common/nav :: nav"></th:block>
+<!-- 使用th:block和th:include屬性將common/nav模板的nav片段包含進來，這是一個通用的導航列 -->
+
+<div layout:fragment="content"></div>
+<!-- 定義一個布局模板的content片段，這個區塊可以被具體的頁面內容所替換 -->
+
+<th:block th:include="common/footer :: footer"></th:block>
+<!-- 使用th:block和th:include屬性將common/footer模板的footer片段包含進來，這是一個通用的頁腳 -->
+
+<!-- 結束<body>區塊 -->
+
+</body>
+</html>
